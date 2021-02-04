@@ -208,8 +208,8 @@ type Config struct {
 	// swarm:
 	EnableSwarm bool `yaml:"enable-swarm"`
 	// redis based
-	SwarmRedisURLs         *listFlag `yaml:"swarm-redis-urls"`
-	SwarmRedisPassword     string
+	SwarmRedisURLs         *listFlag     `yaml:"swarm-redis-urls"`
+	SwarmRedisPassword     string        `yaml:"swarm-redis-password"`
 	SwarmRedisDialTimeout  time.Duration `yaml:"swarm-redis-dial-timeout"`
 	SwarmRedisReadTimeout  time.Duration `yaml:"swarm-redis-read-timeout"`
 	SwarmRedisWriteTimeout time.Duration `yaml:"swarm-redis-write-timeout"`
@@ -1002,6 +1002,8 @@ func (c *Config) parseHistogramBuckets() ([]float64, error) {
 }
 
 func (c *Config) parseEnv() {
-	// Redis password
-	c.SwarmRedisPassword = os.Getenv("SWARM_REDIS_PASSWORD")
+	// Set Redis password from environment variable if not set earlier (configuration file)
+	if c.SwarmRedisPassword == "" {
+		c.SwarmRedisPassword = os.Getenv("SWARM_REDIS_PASSWORD")
+	}
 }
